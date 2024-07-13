@@ -5,7 +5,7 @@
 #include <thread>
 #include <set>
 using namespace std;
-void checkInSet(map<string, string> m, string fileName);
+void checkInSet(map<string, string> *m, string fileName);
 
 int main() {
   map<string, string> masterMap;
@@ -22,10 +22,10 @@ int main() {
       masterMap.insert({b["name"].asString(),screenName});
     }
   }
-  thread t1(checkInSet, masterMap, "languageFiles/lang_fr.json");
-  thread t2(checkInSet, masterMap, "languageFiles/lang_de.json");
-  thread t3(checkInSet, masterMap, "languageFiles/lang_en-us.json");
-  thread t4(checkInSet, masterMap, "languageFiles/lang_es.json");
+  thread t1(checkInSet, &masterMap, "languageFiles/lang_fr.json");
+  thread t2(checkInSet, &masterMap, "languageFiles/lang_de.json");
+  thread t3(checkInSet, &masterMap, "languageFiles/lang_en-us.json");
+  thread t4(checkInSet, &masterMap, "languageFiles/lang_es.json");
   t1.join();
   t2.join();
   t3.join();
@@ -34,7 +34,7 @@ int main() {
 
 // puts new language file into set, and iterates through the master map to 
 // check if the language file has the same enums
-void checkInSet(map<string, string> m, string fileName){
+void checkInSet(map<string, string> *m, string fileName){
   set<string> subSet;
   std::ifstream f(fileName);
   Json::Value root;
@@ -44,8 +44,8 @@ void checkInSet(map<string, string> m, string fileName){
       subSet.insert(name);
   }
 
-  for (auto it = m.begin();
-     it != m.end(); ++it){
+  for (auto it = m->begin();
+     it != m->end(); ++it){
        if(subSet.count(it->first)==0){
          cout << it->first << "\t" << it->second << "\t" << "("<< fileName<< ")" << endl;
        }
