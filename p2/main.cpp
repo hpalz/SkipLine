@@ -2,6 +2,7 @@
 #include "json/json.h"
 #include <fstream>
 #include <iostream>
+#include <thread>
 #include <set>
 using namespace std;
 void checkInSet(map<string, string> m, string fileName);
@@ -21,10 +22,14 @@ int main() {
       masterMap.insert({b["name"].asString(),screenName});
     }
   }
-  checkInSet(masterMap,"languageFiles/lang_fr.json");
-  checkInSet(masterMap,"languageFiles/lang_de.json");
-  checkInSet(masterMap,"languageFiles/lang_en-us.json");
-  checkInSet(masterMap,"languageFiles/lang_es.json");
+  thread t1(checkInSet, masterMap, "languageFiles/lang_fr.json");
+  thread t2(checkInSet, masterMap, "languageFiles/lang_de.json");
+  thread t3(checkInSet, masterMap, "languageFiles/lang_en-us.json");
+  thread t4(checkInSet, masterMap, "languageFiles/lang_es.json");
+  t1.join();
+  t2.join();
+  t3.join();
+  t4.join();
 }
 
 // puts new language file into set, and iterates through the master map to 
